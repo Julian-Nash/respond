@@ -1,5 +1,7 @@
 # jsonresp
 
+![Python package](https://github.com/Julian-Nash/jsonresp/workflows/Python%20package/badge.svg?branch=master)
+
 `jsonresp` is a small, lightweight wrapper around Flask's `make_response` and `jsonify`, providing a fast and convenient
 way to return JSON data with the right HTTP status code.
 

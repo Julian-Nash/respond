@@ -127,5 +127,5 @@ dmypy.json
 .vscode
 
 *.egg.info
-jsonresp/m.py
+jsonres/m.py
 env

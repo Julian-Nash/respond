@@ -2,7 +2,7 @@ import json
 import unittest
 
 from flask import Flask
-from jsonresp import JSONResponse
+from jsonres import JSONResponse
 
 
 def create_app():

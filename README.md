@@ -8,7 +8,7 @@ way to return JSON data with the right HTTP status code.
 `jsonres` utilizes HTTP status code descriptions as methods, you simply call a static method 
 such as `ok`, `not_found` or `internal_server_error` and optionally pass in the data you wish to return as JSON.
 
-> Python v3.6 +
+_**Python v3.6 +**_
 
 ## Installation
 

@@ -7,8 +7,6 @@ from httpz import HTTPStatusCodeEnum as HTTPStatusCode
 class JSONResponse(object):
     """ Class for returning JSON responses """
 
-    _default_data = ""
-
     @classmethod
     def _send_response(
             cls,
@@ -16,7 +14,7 @@ class JSONResponse(object):
             data: Optional[Union[str, int, float, bool, list, dict, None]] = None,
             headers: Optional[dict] = None) -> Response:
         """ Builds and returns a flask Response """
-        resp: Response = make_response(jsonify(data or cls._default_data), status_code)
+        resp: Response = make_response(jsonify(data or ""), status_code)
         if headers:
             resp.headers.update(**headers)
         return resp

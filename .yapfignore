@@ -1,0 +1,5 @@
+.github
+build
+dist
+env
+*egg-info

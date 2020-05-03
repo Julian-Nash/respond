@@ -26,13 +26,31 @@ from jsonres import jsonresonse
 
 You can now call one of many staticmethods of the class
 
-Return a `200 OK` status code and a dict
+Return a `200 OK` status code and a list
 
 ```py3
 @app.route("/")
 def example():
-    """ Returns a dict with an HTTP 200 OK status code """
-    return jsonresonse.ok({"message": "ok"})
+    """ Returns a list with an HTTP 200 OK status code """
+    return jsonresonse.ok([1, 2, 3])
+```
+
+Return a `400 BAD REQUEST` status code and a dict
+
+```py3
+@app.route("/")
+def example():
+    """ Returns a dict with an HTTP 400 BAD REQUEST status code """
+    return jsonresonse.bad_request({"message": "You did something wrong"})
+```
+
+Return a `500 INTERNAL SERVER ERROR` status code
+
+```py3
+@app.route("/")
+def example():
+    """ Returns an empty string with an HTTP 500 INTERNAL SERVER ERROR status code """
+    return jsonresonse.bad_request()
 ```
 
 Passing no data to the method returns an empty string
@@ -50,10 +68,7 @@ You can optionally pass in a headers dict if required
 @app.route("/")
 def example():
     """ Return a dict with custom headers """
-    return jsonresonse.ok(
-        data={"message": "ok"},
-        headers={"X-Custom-Header": "hello!"}
-    )
+    return jsonresonse.ok(data={"message": "ok"}, headers={"X-Custom-Header": "hello!"})
 ```
 
 Taking a look in the Chrome developer tools, we can see our custom header:

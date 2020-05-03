@@ -129,3 +129,4 @@ dmypy.json
 *.egg.info
 jsonres/m.py
 env
+release.sh

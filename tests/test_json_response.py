@@ -1,7 +1,7 @@
 import json
 import unittest
 
-from .test_app import create_app
+from .application import create_app
 
 
 class TestJSONResponse(unittest.TestCase):

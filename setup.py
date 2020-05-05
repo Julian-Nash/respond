@@ -1,11 +1,11 @@
 import setuptools
 
-with open("README.md", "r") as fh:
+with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="jsonres",
-    version="0.1",
+    name="respond",
+    version="0.3",
     packages=setuptools.find_packages(),
     install_requires=["flask", "httpz"],
     author="Julian Nash",
@@ -14,11 +14,11 @@ setuptools.setup(
     long_description=long_description,
     long_description_content_type='text/markdown',
     keywords="flask http request parser json rest",
-    url="https://github.com/Julian-Nash/jsonres",
+    url="https://github.com/Julian-Nash/respond",
     project_urls={
-        "Bug Tracker": "https://github.com/Julian-Nash/jsonres",
-        "Documentation": "https://github.com/Julian-Nash/jsonres",
-        "Source Code": "https://github.com/Julian-Nash/jsonres",
+        "Bug Tracker": "https://github.com/Julian-Nash/respond",
+        "Documentation": "https://github.com/Julian-Nash/respond",
+        "Source Code": "https://github.com/Julian-Nash/respond",
     },
     classifiers=[
         'Intended Audience :: Developers',

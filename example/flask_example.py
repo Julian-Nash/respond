@@ -1,6 +1,6 @@
 from flask import Flask
 
-from jsonres import JSONResponse
+from respond import JSONResponse
 
 
 def create_app():

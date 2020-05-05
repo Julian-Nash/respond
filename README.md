@@ -1,11 +1,11 @@
-# jsonres
+# respond
 
-![Python package](https://github.com/Julian-Nash/jsonres/workflows/Python%20package/badge.svg?branch=master)
+![Python package](https://github.com/Julian-Nash/respond/workflows/Python%20package/badge.svg?branch=master)
 
-`jsonres` is a small, lightweight wrapper around Flask's `make_response` and `jsonify`, providing a fast and convenient
+`respond` is a small, lightweight wrapper around Flask's `make_response` and `jsonify`, providing a fast and convenient
 way to return JSON data with the right HTTP status code.
 
-`jsonres` utilizes HTTP status code descriptions as methods, you simply call a static method 
+`respond` utilizes HTTP status code descriptions as methods, you simply call a static method
 such as `ok`, `not_found` or `internal_server_error` and optionally pass in the data you wish to return as JSON.
 
 🐍 Python v3.6 +
@@ -13,15 +13,15 @@ such as `ok`, `not_found` or `internal_server_error` and optionally pass in the 
 ## Installation
 
 ```shell script
-pip install jsonres
+pip install respond
 ```
 
 ## Usage
 
-Import the `jsonresonse` class
+Import the `JSONResponse` class
 
 ```py3
-from jsonres import jsonresonse
+from respond import JSONResponse
 ```
 
 You can now call one of many staticmethods of the class
@@ -32,7 +32,7 @@ Return a `200 OK` status code and a list
 @app.route("/")
 def example():
     """ Returns a list with an HTTP 200 OK status code """
-    return jsonresonse.ok([1, 2, 3])
+    return JSONResponse.ok([1, 2, 3])
 ```
 
 Return a `400 BAD REQUEST` status code and a dict
@@ -41,7 +41,7 @@ Return a `400 BAD REQUEST` status code and a dict
 @app.route("/")
 def example():
     """ Returns a dict with an HTTP 400 BAD REQUEST status code """
-    return jsonresonse.bad_request({"message": "You did something wrong"})
+    return JSONResponse.bad_request({"message": "You did something wrong"})
 ```
 
 Return a `500 INTERNAL SERVER ERROR` status code
@@ -50,7 +50,7 @@ Return a `500 INTERNAL SERVER ERROR` status code
 @app.route("/")
 def example():
     """ Returns an empty string with an HTTP 500 INTERNAL SERVER ERROR status code """
-    return jsonresonse.bad_request()
+    return JSONResponse.bad_request()
 ```
 
 Passing no data to the method returns an empty string
@@ -59,7 +59,7 @@ Passing no data to the method returns an empty string
 @app.route("/")
 def ok():
     """ Return an empty HTTP 200 OK response """
-    return jsonresonse.ok()
+    return JSONResponse.ok()
 ```
 
 You can optionally pass in a headers dict if required
@@ -68,7 +68,7 @@ You can optionally pass in a headers dict if required
 @app.route("/")
 def example():
     """ Return a dict with custom headers """
-    return jsonresonse.ok(data={"message": "ok"}, headers={"X-Custom-Header": "hello!"})
+    return JSONResponse.ok(data={"message": "ok"}, headers={"X-Custom-Header": "hello!"})
 ```
 
 Taking a look in the Chrome developer tools, we can see our custom header:
@@ -81,7 +81,7 @@ Server: Werkzeug/1.0.1 Python/3.8.2
 X-Custom-Header: hello!
 ```
 
-`jsonres` has methods for all HTTP status codes defined by the ietf - https://tools.ietf.org/html/rfc7231
+`respond` has methods for all HTTP status codes defined by the ietf - https://tools.ietf.org/html/rfc7231
 
 Common status codes include, `404 NOT FOUND`, here being used in a Flask error handler
 
@@ -89,7 +89,7 @@ Common status codes include, `404 NOT FOUND`, here being used in a Flask error h
 def handle_not_found_error(e):
     """ Handler for not found errors """
     app.logger.warning(e)
-    return jsonresonse.not_found(data={"message": "Not found"})
+    return JSONResponse.not_found(data={"message": "Not found"})
 
 app.register_error_handler(404, handle_not_found_error)
 ```
@@ -100,7 +100,7 @@ And `500 INTERNAL SERVER ERROR`
 @app.route("/internal-server-error")
 def internal_server_error():
     msg = {"message": "Whoops, we did something wrong"}
-    return jsonresonse.internal_server_error(msg)
+    return JSONResponse.internal_server_error(msg)
 ```
 
 Visiting this URL in the browser returns
@@ -111,12 +111,12 @@ Visiting this URL in the browser returns
 
 ## Flask example
 
-Here's a trivial example, showing `jsonres` in action
+Here's a trivial example, showing `respond` in action
 
 ```py3
 from flask import Flask
 
-from jsonres import jsonresonse
+from respond import JSONResponse
 
 
 def create_app():
@@ -126,17 +126,17 @@ def create_app():
     @app.route("/")
     def ok():
         """ Return an empty HTTP 200 OK response """
-        return jsonresonse.ok()
+        return JSONResponse.ok()
 
     @app.route("/dict")
     def d():
         """ Return a dict """
-        return jsonresonse.ok({"message": "ok"})
+        return JSONResponse.ok({"message": "ok"})
 
     @app.route("/with-headers")
     def with_headers():
         """ Return a dict with custom headers """
-        return jsonresonse.ok(
+        return JSONResponse.ok(
             data={"message": "ok"},
             headers={"X-Custom-Header": "hello!"}
         )
@@ -145,36 +145,36 @@ def create_app():
     def bad_request():
         """ Return a 400 response with a dict """
         data = {"message": "You did something wrong"}
-        return jsonresonse.bad_request(data=data)
+        return JSONResponse.bad_request(data=data)
 
     @app.route("/unauthorized")
     def unauthorized():
-        return jsonresonse.unauthorized()
+        return JSONResponse.unauthorized()
 
     @app.route("/internal-server-error")
     def internal_server_error():
         msg = {"message": "Whoops, we did something wrong"}
-        return jsonresonse.internal_server_error(msg)
+        return JSONResponse.internal_server_error(msg)
 
     @app.route("/empty-list")
     def ok_empty_list():
         """ Return an empty list """
-        return jsonresonse.ok(data=[])
+        return JSONResponse.ok(data=[])
 
     @app.route("/empty-dict")
     def ok_empty_dict():
         """ Return an empty dict """
-        return jsonresonse.ok(data={})
+        return JSONResponse.ok(data={})
 
     def handle_not_found_error(e):
         """ Handler for not found errors """
         app.logger.warning(e)
-        return jsonresonse.not_found(data={"message": "Not found"})
+        return JSONResponse.not_found(data={"message": "Not found"})
 
     def handle_internal_server_error(e):
         """ Handler for internal server errors """
         app.logger.error(e)
-        return jsonresonse.internal_server_error()
+        return JSONResponse.internal_server_error()
 
     app.register_error_handler(404, handle_not_found_error)
     app.register_error_handler(500, handle_internal_server_error)

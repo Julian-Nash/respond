@@ -58,8 +58,8 @@ Passing no data to the method returns an empty string
 ```py3
 @app.route("/")
 def ok():
-    """ Return an empty HTTP 200 OK response """
-    return JSONResponse.ok()
+    """ Return an empty HTTP 204 NO CONTENT response """
+    return JSONResponse.no_content()
 ```
 
 You can optionally pass in a headers dict if required

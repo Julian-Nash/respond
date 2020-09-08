@@ -105,3 +105,7 @@ class TestJSONResponse(unittest.TestCase):
         url = "/headers"
         r = self.test_client.get(url)
         self.assertEqual(r.headers.get("X-Custom-Header"), "hello!")
+
+
+if __name__ == "__main__":
+    unittest.main()

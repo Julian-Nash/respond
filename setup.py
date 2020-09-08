@@ -5,9 +5,9 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name="respond",
-    version="0.3",
+    version="1.0",
     packages=setuptools.find_packages(),
-    install_requires=["flask", "httpz"],
+    install_requires=["flask"],
     author="Julian Nash",
     author_email="julianjamesnash@gmail.com",
     description="A lightweight and useful wrapper around Flask's make_response and jsonify",

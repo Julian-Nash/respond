@@ -1,76 +1,59 @@
+from respond import Responder, JSONResponse, TextResponse, XMLResponse
+
 from flask import Flask
 
-from respond import JSONResponse
+
+app = Flask(__name__)
+app.config['JSONIFY_PRETTYPRINT_REGULAR'] = True
 
 
-def create_app():
+@app.route("/txt")
+def txt():
+    """ Return a text response with an HTTP 200 OK status """
+    return Responder.text.ok("hi")
 
-    app = Flask(__name__)
 
-    @app.route("/")
-    def ok():
-        """ Return an empty HTTP 200 OK response """
-        return JSONResponse.ok()
+@app.route("/json")
+def json():
+    """ Return a JSON response with an HTTP 200 OK status """
+    data: dict = {"data": ["here", "you", "go"]}
+    return Responder.json.ok(data)
 
-    @app.route("/dict")
-    def d():
-        """ Return a dict """
-        return JSONResponse.ok({"message": "ok"})
 
-    @app.route("/list")
-    def l():
-        """ Return a dict """
-        return JSONResponse.ok([1, 2, 3])
+@app.route("/xml")
+def xml():
+    """ Return an XML response with an HTTP 200 OK status """
+    data: str = """<?xml version="1.0" encoding="UTF-8"?>
 
-    @app.route("/with-headers")
-    def with_headers():
-        """ Return a dict with custom headers """
-        return JSONResponse.ok(
-            data={"message": "ok"},
-            headers={"X-Custom-Header": "hello!"}
-        )
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+   <url>
+      <loc>http://www.example.com/</loc>
+      <lastmod>2005-01-01</lastmod>
+      <changefreq>monthly</changefreq>
+      <priority>0.8</priority>
+   </url>
+</urlset> 
+    """
+    return Responder.xml.ok(data)
 
-    @app.route("/bad-request")
-    def bad_request():
-        """ Return a 400 response with a dict """
-        data = {"message": "You did something wrong"}
-        return JSONResponse.bad_request(data=data)
 
-    @app.route("/unauthorized")
-    def unauthorized():
-        return JSONResponse.unauthorized()
+@app.route("/json/bad-request")
+def json_bad_request():
+    """ Return a JSON response with an HTTP 400 BAD REQUEST status """
+    return Responder.json.bad_request({"error": {"message": "You did something wrong"}})
 
-    @app.route("/internal-server-error")
-    def internal_server_error():
-        msg = {"message": "Whoops, we did something wrong"}
-        return JSONResponse.internal_server_error(msg)
 
-    @app.route("/empty-list")
-    def ok_empty_list():
-        """ Return an empty list """
-        return JSONResponse.ok(data=[])
+@app.route("/json/internal-server-error")
+def json_internal_server_error():
+    """ Return a JSON response with an HTTP 500 INTERNAL SERVER ERROR status """
+    return Responder.json.internal_server_error({"error": {"message": "We did something wrong"}})
 
-    @app.route("/empty-dict")
-    def ok_empty_dict():
-        """ Return an empty dict """
-        return JSONResponse.ok(data={})
 
-    def handle_not_found_error(e):
-        """ Handler for not found errors """
-        app.logger.warning(e)
-        return JSONResponse.not_found(data={"message": "Not found"})
-
-    def handle_internal_server_error(e):
-        """ Handler for internal server errors """
-        app.logger.error(e)
-        return JSONResponse.internal_server_error()
-
-    app.register_error_handler(404, handle_not_found_error)
-    app.register_error_handler(500, handle_internal_server_error)
-
-    return app
+@app.route("/json/created")
+def json_created():
+    """ Return a JSON response with an HTTP 201 CREATED status """
+    return Responder.json.created({"data": {"here": ["is", "what", "you", "created"]}})
 
 
 if __name__ == "__main__":
-    app = create_app()
     app.run()

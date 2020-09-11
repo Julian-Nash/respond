@@ -397,6 +397,11 @@ def xml():
     return Responder.xml.ok(xml_test_data)
 
 
+@xml_bp.route("/headers")
+def xml_headers():
+    return Responder.xml.ok(xml_test_data, headers={"X-Custom": "xml"})
+
+
 def create_app() -> Flask:
 
     app = Flask(__name__)
@@ -551,13 +556,18 @@ class TestRespondXML(unittest.TestCase):
         app = create_app()
         self.test_client = app.test_client()
 
-    def test_text_content_type(self):
+    def test_xml_content_type(self):
 
         r = self.test_client.get("/xml")
         self.assertEqual(r.content_type, "text/xml; charset=utf-8")
         self.assertEqual(r.status_code, HTTPStatus.OK)
 
-    def test_text_content(self):
+    def test_xml_headers(self):
+        r = self.test_client.get("/xml/headers")
+        self.assertEqual(r.status_code, HTTPStatus.OK)
+        self.assertEqual(r.headers["X-Custom"], "xml")
+
+    def test_xml_content(self):
         r = self.test_client.get("/xml")
         self.assertEqual(r.status_code, HTTPStatus.OK)
         self.assertEqual(r.data.decode(), xml_test_data)

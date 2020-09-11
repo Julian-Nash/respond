@@ -9,7 +9,21 @@ way to return JSON, XML or plaintext data with the right HTTP status code and he
 such as `ok`, `not_found` or `internal_server_error` against the data type you with to return, optionally passing in
  a dictionary of headers to set on the response.
 
-🐍 Python v3.6 +
+__Python v3.6 + (100% coverage)__
+
+```shell script
+Name                           Stmts   Miss  Cover   Missing
+------------------------------------------------------------
+respond/__init__.py                4      0   100%
+respond/abs_http_response.py     188      0   100%
+respond/json_response.py          11      0   100%
+respond/responder.py               7      0   100%
+respond/text_response.py          12      0   100%
+respond/xml_response.py           12      0   100%
+------------------------------------------------------------
+TOTAL                            234      0   100%
+
+```
 
 ## Installation
 

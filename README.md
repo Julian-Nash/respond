@@ -110,8 +110,8 @@ Visiting this URL in the browser returns
 {"error": {"message": "Whoops, we did something wrong"}
 ```
 
-You may also import individual classes for the specific data types JSON, XML and text using `JSONResponse
-`, `XMLREsponse` and `TextResponse` respectively.
+You may also import individual classes for the specific data types JSON, XML and text using `JSONResponse`, 
+`XMLResponse` and `TextResponse` respectively.
 
 ```py3
 from respond import JSONResponse

@@ -3,10 +3,11 @@
 ![Python package](https://github.com/Julian-Nash/respond/workflows/Python%20package/badge.svg?branch=master)
 
 `respond` is a small, lightweight wrapper around Flask's `make_response` and `jsonify`, providing a fast and convenient
-way to return JSON data with the right HTTP status code.
+way to return JSON, XML or plaintext data with the right HTTP status code and headers.
 
 `respond` utilizes the RFC HTTP status code descriptions as methods, you simply call a static method
-such as `ok`, `not_found` or `internal_server_error` and optionally pass in the data you wish to return as JSON.
+such as `ok`, `not_found` or `internal_server_error` against the data type you with to return, optionally passing in
+ a dictionary of headers to set on the response.
 
 🐍 Python v3.6 +
 
@@ -18,10 +19,10 @@ pip install respond
 
 ## Usage
 
-Import the `JSONResponse` class
+Import the `Responder` class
 
 ```py3
-from respond import JSONResponse
+from respond import Responder
 ```
 
 You can now call one of many staticmethods of the class
@@ -32,7 +33,7 @@ Return a `200 OK` status code and a list
 @app.route("/")
 def example():
     """ Returns a list with an HTTP 200 OK status code """
-    return JSONResponse.ok([1, 2, 3])
+    return Responder.json.ok([1, 2, 3])
 ```
 
 Return a `400 BAD REQUEST` status code and a dict
@@ -41,7 +42,7 @@ Return a `400 BAD REQUEST` status code and a dict
 @app.route("/")
 def example():
     """ Returns a dict with an HTTP 400 BAD REQUEST status code """
-    return JSONResponse.bad_request({"message": "You did something wrong"})
+    return Responder.json.bad_request({"error": {"message": "You did something wrong"}})
 ```
 
 Return a `500 INTERNAL SERVER ERROR` status code
@@ -49,8 +50,8 @@ Return a `500 INTERNAL SERVER ERROR` status code
 ```py3
 @app.route("/")
 def example():
-    """ Returns an empty string with an HTTP 500 INTERNAL SERVER ERROR status code """
-    return JSONResponse.bad_request()
+    """ Returns a dict with an HTTP 500 INTERNAL SERVER ERROR status code """
+    return Responder.json.internal_server_error({"error": {"message": "We did something wrong"}})
 ```
 
 Passing no data to the method returns an empty string
@@ -59,7 +60,7 @@ Passing no data to the method returns an empty string
 @app.route("/")
 def ok():
     """ Return an empty HTTP 204 NO CONTENT response """
-    return JSONResponse.no_content()
+    return Responder.json.no_content()
 ```
 
 You can optionally pass in a headers dict if required
@@ -68,10 +69,10 @@ You can optionally pass in a headers dict if required
 @app.route("/")
 def example():
     """ Return a dict with custom headers """
-    return JSONResponse.ok(data={"message": "ok"}, headers={"X-Custom-Header": "hello!"})
+    return Responder.json.ok(data={"message": "ok"}, headers={"X-Custom-Header": "hello!"})
 ```
 
-Taking a look in the Chrome developer tools, we can see our custom header:
+On inspecting the response, we can see our custom header:
 
 ```shell script
 Content-Length: 17
@@ -81,7 +82,7 @@ Server: Werkzeug/1.0.1 Python/3.8.2
 X-Custom-Header: hello!
 ```
 
-`respond` has methods for all HTTP status codes defined by the ietf - https://tools.ietf.org/html/rfc7231
+The `Responder` class has methods for all HTTP status codes defined by the ietf - https://tools.ietf.org/html/rfc7231
 
 Common status codes include, `404 NOT FOUND`, here being used in a Flask error handler
 
@@ -89,7 +90,7 @@ Common status codes include, `404 NOT FOUND`, here being used in a Flask error h
 def handle_not_found_error(e):
     """ Handler for not found errors """
     app.logger.warning(e)
-    return JSONResponse.not_found(data={"message": "Not found"})
+    return Responder.json.not_found(data={"message": "Not found"})
 
 app.register_error_handler(404, handle_not_found_error)
 ```
@@ -99,14 +100,44 @@ And `500 INTERNAL SERVER ERROR`
 ```py3
 @app.route("/internal-server-error")
 def internal_server_error():
-    msg = {"message": "Whoops, we did something wrong"}
-    return JSONResponse.internal_server_error(msg)
+    data: dict = {"error": {"message": "Whoops, we did something wrong"}}
+    return Responder.json.internal_server_error(data)
 ```
 
 Visiting this URL in the browser returns
 
 ```shell script
-{"message":"Whoops, we did something wrong"}
+{"error": {"message": "Whoops, we did something wrong"}
+```
+
+You may also import individual classes for the specific data types JSON, XML and text using `JSONResponse
+`, `XMLREsponse` and `TextResponse` respectively.
+
+```py3
+from respond import JSONResponse
+
+@app.route("/internal-server-error")
+def internal_server_error():
+    data: dict = {"error": {"message": "Whoops, we did something wrong"}}
+    return JSONResponse.internal_server_error(data)
+```
+
+## Extending
+
+The `HTTPResponse` abstract base class provides an interface for all of the HTTP status codes and defines a single
+ abstract method called `_make_response`.
+ 
+Users can implement their own class by inheriting from `HTTPResponse` and implementing the `_make_response` method
+, accepting 4 parameters `status`, `data`, `headers` and `**kwargs`.
+
+```py3
+class HTTPResponse(abc.ABC):
+    """ HTTPResponse abstract base class """
+
+    @classmethod
+    @abc.abstractmethod
+    def _make_response(cls, status: int, data: Optional[Any] = None, headers: Optional[dict] = None, **kwargs):
+        raise NotImplementedError
 ```
 
 ## Methods available
